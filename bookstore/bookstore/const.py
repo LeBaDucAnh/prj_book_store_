@@ -1,0 +1,9 @@
+BOOK_STATUS = [
+    ('IN STOCK', 'IN STOCK'),
+    ('OUT OF STOCK', 'OUT OF STOCK'),
+]
+
+TRANS_STATUS = [
+    ('SUCCESS', 'SUCCESS'),
+    ('FAILED', 'FAILED'),
+]
