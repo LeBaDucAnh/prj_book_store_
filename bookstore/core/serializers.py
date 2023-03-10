@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'email', 'first_name', 'last_name', 'is_superuser')
+        fields = ('username', 'password', 'email', 'first_name', 'last_name')
 
 
 class UserSerializerWithToken(serializers.ModelSerializer):
@@ -32,6 +32,12 @@ class UserSerializerWithToken(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+    
+    def validate_email(self, value):
+        lower_email = value.lower()
+        if User.objects.filter(email__iexact=lower_email).exists():
+            raise serializers.ValidationError("Duplicate")
+        return lower_email
 
     class Meta:
         model = User
