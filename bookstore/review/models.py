@@ -8,7 +8,7 @@ class Review(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     rating = models.IntegerField(blank=True)
-    comment = models.TextField(max_length=2000, blank=True)
+    message = models.TextField(max_length=2000, blank=True)
     image = models.ImageField(upload_to='reviews/')
     created_at = models.DateTimeField(auto_now_add=True)
     uploaded_at = models.DateTimeField(auto_now=True)
