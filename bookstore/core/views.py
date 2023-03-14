@@ -9,6 +9,61 @@ from django.http import HttpResponse
 from rest_framework.exceptions import AuthenticationFailed,ValidationError
 import jwt,datetime
 
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from .serializers import UserSerializer
+
+class UserRegistration(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            # Create a new User with the validated data
+            user = User.objects.create_user(
+                serializer.validated_data['username'],
+                serializer.validated_data['email'],
+                serializer.validated_data['password']
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserLogin(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return Response(status=status.HTTP_200_OK)
+        
+        payload={
+            'id':user.id,
+            'exp':datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+            'at':datetime.datetime.utcnow()
+        }
+
+        token =jwt.encode(payload,'secret',algorithm='HS256')
+
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+class UserLogout(APIView):
+    def post(self, request):
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+
 # Create your views here.
 class UserRegister(APIView):
     def post(self, request):
