@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import HttpResponse
 from rest_framework.exceptions import AuthenticationFailed,ValidationError
-import jwt,datetime
+import datetime, jwt
 
 
 from rest_framework.views import APIView
@@ -41,6 +41,8 @@ class UserLogin(APIView):
             login(request, user)
             return Response(status=status.HTTP_200_OK)
         
+        serializer=UserSerializer(user)
+
         payload={
             'id':user.id,
             'exp':datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
@@ -48,8 +50,19 @@ class UserLogin(APIView):
         }
 
         token =jwt.encode(payload,'secret',algorithm='HS256')
+        response=Response()
+    
+        response.set_cookie(key='jwt',value=token,httponly=True)
+        response.data = {
+            'sucess':True,
+            'message': 'Dang nhap thanh cong',
+            'jwt':token,
+            'status': status.HTTP_200_OK,
+            'data':serializer.data
+        }
 
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        # return Response(data = data, status=status.HTTP_401_UNAUTHORIZED)
+        return response
 
 class UserLogout(APIView):
     def post(self, request):
