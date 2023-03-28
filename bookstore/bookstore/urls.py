@@ -31,10 +31,8 @@ urlpatterns = [
     path('api/category/', include('category.urls')),
     path('api/book/', include('book.urls')),
     path('api/order/', include('order.urls')),
-    path('api/publisher/', include('publisher.urls')),
     path('api/review/', include('review.urls')),
     path('api/transaction/', include('transaction.urls')),
-    path('api/voucher/', include('voucher.urls')),
 ]
 
 if settings.DEBUG:  # new
