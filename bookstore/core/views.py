@@ -92,6 +92,7 @@ class UserLogin(APIView):
             
             # response=Response()
         
+
             # response.set_cookie(key='jwt',value=token,httponly=True)
             
             
@@ -108,7 +109,8 @@ class UserLogin(APIView):
 
             #return response
 
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        # return Response(data = data, status=status.HTTP_401_UNAUTHORIZED)
+        return response
 
 class UserLogout(APIView):
     def post(self, request):
