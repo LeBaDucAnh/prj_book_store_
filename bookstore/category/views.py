@@ -1,62 +1,45 @@
-from django.shortcuts import render
-from .models import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import *
 from rest_framework import status
-from rest_framework.decorators import api_view
-from django.db.models import Q
+from .models import Category
+from .serializers import CategorySerializer
+from django.http import Http404
 
-# Create your views here.
-@api_view(['GET'])
-def get_all_category(request):   
-    categorys =  Category.objects.all()   
-    if categorys:
-        result = CategorySerializers(categorys, many = True).data
-        return Response({'data': result,'status': status.HTTP_200_OK})
-    else:
-        return Response(status = status.HTTP_404_NOT_FOUND)
-    
-@api_view(['POST'])
-def add_category(request):
-    categorys = CategorySerializers(data = request.data)
-    if categorys.is_valid():
-        categorys.save()
-        return Response(categorys.data)
-    else:
-        return Response(status = status.HTTP_404_NOT_FOUND)
-
-# API sửa thông tin 
-@api_view(['PUT']) 
-def update_category(request, pk):
-    categorys = Category.objects.get(pk = pk)
-    serializer = CategorySerializers(categorys,data = request.data )
-    if serializer.is_valid():
-        serializer.save()
+class CategoryList(APIView):
+    def get(self, request):
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data)
-    else:
-        return Response(serializer.errors,status = status.HTTP_404_NOT_FOUND) 
-        
-#API xóa thông tin  
-@api_view(['DELETE'])
-def delete_category(request, pk):
-    try:
-        categorys = Category.objects.get(pk=pk)
-        categorys.delete()
-        return Response({'success': True})
-    except Exception as e:
-        return Response({'success':False, 'error':str(e)})
-    
 
-@api_view(['GET'])
-def search_category(request):
-    keyword = request.GET.get('keyword','')
-    category_list = Category.objects.all()
-    if keyword:
-        category_list = Category.objects.filter(
-            Q(authorname__icontains = keyword)
-        )
-    total = category_list.count()
-    data = CategorySerializers(category_list, many = True).data
-    result = {'total':total, 'data':data}
-    return Response(result)
+    def post(self, request):
+        serializer = CategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CategoryDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Category.objects.get(pk=pk)
+        except Category.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        category = self.get_object(pk)
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        category = self.get_object(pk)
+        serializer = CategorySerializer(category, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        category = self.get_object(pk)
+        category.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
