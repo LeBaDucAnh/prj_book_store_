@@ -64,31 +64,21 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        #'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
-# JWT_AUTH = {
-#    'JWT_RESPONSE_PAYLOAD_HANDLER': 'myapp.utils.jwt_response_payload_handler',
-#    'JWT_SECRET_KEY': SECRET_KEY,
-#    'JWT_ALGORITHM': 'HS256',
-#    'JWT_ALLOW_REFRESH': True,
-#    'JWT_EXPIRATION_DELTA': timedelta(days=7),
-#    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=30),
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=6000),
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 # }
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=6000),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-}
 
 ROOT_URLCONF = 'bookstore.urls'
 
