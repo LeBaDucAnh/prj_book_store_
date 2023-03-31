@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 class RegisterView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -30,9 +30,9 @@ class UserLogin(APIView):
         user = authenticate(request, username = username , password=password)
 
         if user is not None:
-            token, created = Token.objects.get_or_create(user=user)
-            #login(request, user)
-            return Response({'message': 'Logged in successfully', 'token':token.key},status=status.HTTP_200_OK)
+            #token, created = Token.objects.get_or_create(user=user), 'token':token.key
+            login(request, user)
+            return Response({'message': 'Logged in successfully'},status=status.HTTP_200_OK)
 
 
 class UserLogout(APIView):
