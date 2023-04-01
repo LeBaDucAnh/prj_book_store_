@@ -4,19 +4,37 @@ from rest_framework import status
 from .models import Author
 from .serializers import AuthorSerializer
 from django.http import Http404
-
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 class AuthorList(APIView):
     def get(self, request):
         authors = Author.objects.all()
         serializer = AuthorSerializer(authors, many=True)
         return Response(serializer.data)
 
+   
+class AuthorRetriew(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
     def post(self, request):
         serializer = AuthorSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, pk):
+        author = self.get_object(pk)
+        serializer = AuthorSerializer(author, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        author = self.get_object(pk)
+        author.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AuthorDetail(APIView):
@@ -31,15 +49,4 @@ class AuthorDetail(APIView):
         serializer = AuthorSerializer(author)
         return Response(serializer.data)
 
-    def put(self, request, pk):
-        author = self.get_object(pk)
-        serializer = AuthorSerializer(author, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk):
-        author = self.get_object(pk)
-        author.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+   

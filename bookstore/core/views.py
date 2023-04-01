@@ -12,6 +12,8 @@ import json
 from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
+import bcrypt
+from django.contrib.auth.hashers import check_password
 
 #@permission_classes([IsAuthenticated])
 class RegisterView(APIView):
@@ -23,16 +25,46 @@ class RegisterView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class UserLogin(APIView):
+class UserLogin(APIView): 
     def post(self, request):
+        email = request.data.get('email')
         password = request.data.get('password')
-        username = request.data.get('username')
-        user = authenticate(request, username = username , password=password)
-
-        if user is not None:
-            #token, created = Token.objects.get_or_create(user=user), 'token':token.key
+        if not email or not password:
+            return Response({'detail': 'Email or password is missing'}, status=status.HTTP_400_BAD_REQUEST)
+        print(email)
+        print(password)
+        user = User.objects.filter(email=email).first()
+        print(user.id)
+        #user = authenticate(email=email, password=password)
+        if check_password(password, user.password):
             login(request, user)
-            return Response({'message': 'Logged in successfully'},status=status.HTTP_200_OK)
+            token, _ = Token.objects.get_or_create(user_id=user.id)
+            print(token.__dict__)
+            return Response(data = {'message': 'Logged in successfully', 'token': token.key, 'user': user.email}, status=status.HTTP_200_OK)
+        else:
+            # Trả về thông báo lỗi không thể đăng nhập
+            return Response({"detail": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
+# def post(self, request):
+    #     password = request.data.get('password')
+    #     email = request.data.get('email')
+    #     user = authenticate(request, username = email , password=password)
+
+    #     if user is not None:
+    #         #token, created = Token.objects.get_or_create(user=user), 'token':token.key
+    #         #login(request, user)
+    #         token, _ = Token.objects.get_or_create(user=user)
+    #         #return Response({})'message': 'Logged in successfully', 
+    #         return Response({'token': token.key},status=status.HTTP_200_OK)
+# class LoginAdminView(APIView):
+#     def post(self, request):
+#         username = request.data.get('username')
+#         password = request.data.get('password')
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None and user.is_admin:
+#             login(request, user)
+#             return Response({'detail': 'Logged in successfully.'})
+#         else:
+#             return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class UserLogout(APIView):
