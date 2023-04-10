@@ -14,8 +14,9 @@ class AuthorList(APIView):
 
    
 class AuthorRetriew(APIView):
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         serializer = AuthorSerializer(data=request.data)
         if serializer.is_valid():

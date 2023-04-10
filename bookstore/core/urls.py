@@ -8,4 +8,5 @@ urlpatterns = [
     path('loginadmin/', jwt_views.TokenObtainPairView.as_view(), name="user-login"),
     path('change-password/', ChangePasswordView.as_view()),
     path('profile/', ProfileView.as_view()),
+    path('createadmin/', AdminRegister.as_view()),
 ]

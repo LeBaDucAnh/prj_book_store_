@@ -1,6 +1,6 @@
 from django.db import models
 from bookstore.const import TRANS_STATUS
-from django.contrib.auth.models import User
+from core.models import User
 
 # Create your models here.
 class Transaction(models.Model):
@@ -13,4 +13,5 @@ class Transaction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    fullname = models.CharField(max_length=255, null=True)
 

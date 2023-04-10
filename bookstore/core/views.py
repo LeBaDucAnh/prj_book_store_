@@ -55,16 +55,16 @@ class UserLogin(APIView):
     #         token, _ = Token.objects.get_or_create(user=user)
     #         #return Response({})'message': 'Logged in successfully', 
     #         return Response({'token': token.key},status=status.HTTP_200_OK)
-# class LoginAdminView(APIView):
-#     def post(self, request):
-#         username = request.data.get('username')
-#         password = request.data.get('password')
-#         user = authenticate(request, username=username, password=password)
-#         if user is not None and user.is_admin:
-#             login(request, user)
-#             return Response({'detail': 'Logged in successfully.'})
-#         else:
-#             return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
+class LoginAdminView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        user = User.objects.filter(email=email).first()
+        if check_password(password, user.password) and user.is_admin:
+            login(request, user)
+            return Response({'detail': 'Logged in successfully.'})
+        else:
+            return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class UserLogout(APIView):
@@ -96,3 +96,13 @@ class ProfileView(APIView):
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+from django.contrib.auth import get_user_model
+class AdminRegister(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        User = get_user_model()
+        admin_user = User.objects.create_superuser(email=email, password=password)
+        return Response(status=status.HTTP_200_OK)

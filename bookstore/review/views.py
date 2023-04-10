@@ -1,13 +1,22 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Review
+from .models import *
 from .serializers import ReviewSerializer
 from django.http import Http404
 class ReviewList(APIView):
     def get(self, request, format=None):
         reviews = Review.objects.all()
         serializer = ReviewSerializer(reviews, many=True)
+        data = serializer.data
+        for review in data:
+            book_id = review['book']
+            user_id = review['user']
+            book = Book.objects.get(id=book_id)
+            user = User.objects.get(id=user_id)
+            review['book_name'] = book.book_name
+            review['fullname'] = user.fullname
+        print(serializer.data)
         return Response(serializer.data)
 
     def post(self, request, format=None):

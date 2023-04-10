@@ -14,8 +14,13 @@ class BookList(APIView):
         return Response(serializer.data)
 
 class BookRetrive(APIView):
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+
+    def get_object(self, pk):
+        try:
+            return Book.objects.get(pk=pk)
+        except Book.DoesNotExist:
+            raise Http404
+
     def post(self, request):
         serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
