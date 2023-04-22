@@ -17,18 +17,23 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('api/auth/', include('core.urls')),
-    # path('api/author/', include('author.urls')),
-    # path('api/category/', include('category.urls')),
-    # path('api/book/', include('book.urls')),
-    # path('api/order/', include('order.urls')),
-    # path('api/publisher/', include('publisher.urls')),
-    # path('api/review/', include('review.urls')),
-    # path('api/transaction/', include('transaction.urls')),
-    # path('api/voucher/', include('voucher.urls')),
+    path('', include('bookshop.urls')),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/auth/', include('core.urls')),
+    path('api/author/', include('author.urls')),
+    path('api/category/', include('category.urls')),
+    path('api/book/', include('book.urls')),
+    path('api/order/', include('order.urls')),
+    path('api/review/', include('review.urls')),
+    path('api/transaction/', include('transaction.urls')),
 ]
 
 if settings.DEBUG:  # new
