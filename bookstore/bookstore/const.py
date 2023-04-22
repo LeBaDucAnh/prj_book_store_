@@ -4,6 +4,8 @@ BOOK_STATUS = [
 ]
 
 TRANS_STATUS = [
-    ('SUCCESS', 'SUCCESS'),
-    ('FAILED', 'FAILED'),
+    ('Chờ xác nhận', 'PENDING'),
+    ("CANCELLED", 'Hủy'),
+    ('DELIVERING', 'Đang giao'),
+    ('SUCCESS','Thành công')
 ]

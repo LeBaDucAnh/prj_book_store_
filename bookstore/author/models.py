@@ -9,3 +9,6 @@ class Author(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @staticmethod
+    def get_all_authors():
+        return Author.objects.all()

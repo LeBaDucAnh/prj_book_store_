@@ -1,12 +1,12 @@
 from django.db import models
-from core.models import User
+from bookshop.models import Customer
 from book.models import Book
 
 # Create your models here.
 class Review(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
     book = models.ForeignKey(Book, on_delete=models.CASCADE, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)
     book_name = models.CharField(max_length=255, null=True)
     fullname = models.CharField(max_length=255, null=True)
     star = models.IntegerField(blank=True)

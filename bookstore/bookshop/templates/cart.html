@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}BookShop|Cart{% endblock %}
+{% load cart %}
+{% load custom_filter %}
+{% block content %}
+{% load static %}
+
+<div id="tg-wrapper" class="tg-wrapper tg-haslayout">
+        <!--************************************
+				Inner Banner Start
+		*************************************-->
+        <div class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="../../media/static/images/bgparallax-07.jpg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="tg-innerbannercontent">
+                            <h1>Sách</h1>
+                            <ol class="tg-breadcrumb">
+                                <li><a href="index.php">Trang chủ</a></li>
+                                <li class="tg-active"> <a href="products.php">Giỏ sách</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--************************************
+				 End
+		*************************************-->
+
+        <!--***********Inner Banner*************************
+				Main Start
+		*************************************-->
+        <main id="tg-main" class="tg-main tg-haslayout">
+            <!--************************************
+					News Grid Start
+			*************************************-->
+            <div class="tg-sectionspace tg-haslayout">
+                <div class="container">
+                    <div class="row">
+                        <div id="tg-twocolumns" class="tg-twocolumns">
+
+                            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-left">
+                                <aside id="tg-sidebar" class="tg-sidebar">
+
+                                    {% comment %} <div class="tg-widget tg-widgetsearch">
+                                        <form action="#" class="tg-formtheme tg-formsearch " method="GET">
+                                            <div class="form-group">
+
+                                                <input type="text" name="search" class="form-group" placeholder="Tìm kiếm sách...">
+                                                <button type="submit"><i class="icon-magnifier"></i></button>
+                                            </div>
+                                        </form>
+                                    </div> {% endcomment %}
+
+                                </aside>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
+
+                                <h2> <span>Tất cả sách  </span> </h2>
+                                <div>
+                                    <form action="" autocomplete="off" method="POST">
+                                        <table class="styled-table">
+                                            <thead>
+
+                                                <tr>
+                                                    <th>STT</th>
+                                                    <th>Tên sách</th>
+                                                    <th>Hình ảnh</th>
+                                                    <th>Số lượng</th>
+                                                    <th>Đơn giá</th>
+                                                    <th>Tổng tiền</th>
+                                                    <th>Quản lý</th>
+                                                </tr>
+                                            </thead>
+                                            
+                                            <tbody>
+                                            {% if books %}
+                                                {% for book in books %}
+                                                        <tr class="active-row">
+                                                            <td>{{forloop.counter}}</td>
+                                                            <td>{{book.book_name}}</td>
+                                                            <td><img src="../media/{{book.image}}" alt="image description" style="height: 100px;"></td>
+                                                            <td>
+                                                                <a class="add-minus" href="#"><i class="fa fa-minus"></i></a>
+                                                                {{book|cart_quantity:request.session.cart}}
+                                                                <a class="add-minus" href="#"><i class="fa fa-plus"></i></a>
+                                                            </td>
+                                                            <td>{{book.unit_price}} VNĐ</td>
+                                                            <td class="total">{{book|price_total:request.session.cart}} VNĐ</td>
+                                                            <td><a href="#">Xóa </a></td>
+                                                        </tr>
+                                                {% endfor %}
+                                                        
+                                                    <tr>
+                                                        <td colspan="7">
+                                                            <h5 style="color: red; text-align: left;">Tổng tiền :
+                                                                <span style="color:#00A963 ;">
+                                                                    {{books|total_cart_price:request.session.cart}} VND
+                                                                </span>
+                                                        </h5>
+                                                        </td>
+                                                    </tr>
+                                                    <td colspan="7">
+                                                        <a href="#" data-toggle="modal" data-target="#exampleModal" class="btn btn-outline-info border rounded" style="background: green; width: 200px">Đặt hàng</a>
+                                                    </td>
+                                                    {% else %}
+                                                    <tr>
+                                                        <td colspan="7">
+                                                            <h5 style="color: red;">Hiện tại giỏ sách trống</h5>
+                                                        </td>
+                                                    </tr>
+                                                
+                                                {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--************************************
+					News Grid End
+			*************************************-->
+        </main>
+        <!--************************************
+				Main End
+		*************************************-->
+    </div>
+    <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+        <div class="modal-dialog" role="document" >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                  Cập nhật thông tin đặt hàng
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <hr>
+            <div class="modal-body">
+              <div>
+                <form action="/check-out" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <label >Địa chỉ</label>
+                      <input type="text" name="address" id="" class="form-group" aria-describedby="helpId">
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="text" name="phone" id="" class="form-control" aria-describedby="helpId">
+                    </div>
+                    <div class="form-group">
+                        <label>Ghi chú</label>
+                        <input type="text" name="note" id="" class="form-control" aria-describedby="helpId">
+                    </div>  
+                      <input type="submit" class="btn float-right btn-outline-info col-lg-6" value="Xác nhận">
+                </form>
+              </div>
+            </div>
+        </div>
+          </div>
+        </div>
+      </div>
+{% endblock %}

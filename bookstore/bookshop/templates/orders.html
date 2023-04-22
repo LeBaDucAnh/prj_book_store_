@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load cart %}
+{% load custom_filter %}
+{% block content %}
+
+<div class="tg-sectionspace tg-haslayout">
+    <div class="container">
+        <div class="row">
+            <div id="tg-twocolumns" class="tg-twocolumns">
+                <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
+                    <div id="tg-content" class="tg-content">
+                        <div id="tg-twocolumns" class="tg-twocolumns">
+
+                            <div class="tg-sectionhead">
+                                <h2>Thông tin đơn hàng
+                                </h2>
+                            </div>
+                            <table class="styled-table ">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Mã đơn</th>
+                                        <th>Họ tên</th>
+                                        <th>Ngày đặt</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Địa chỉ</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Trạng thái</th>
+                                        <th>Quản lý</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for trans in transaction %}
+                                        <tr class="active-row">
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{trans.id}}</td>
+                                            <td>{{trans.fullname}}</td>
+                                            <td>{{trans.created_at}}</td>
+                                            <td>{{trans.phone}}</td>
+                                            <td>{{trans.address}}</td>
+                                            <td>{{trans.amount}}</td>
+                                            {% if trans.status == "PENDING" %}
+                                            <td>Chờ xác nhận</td>
+                                            <td style="display: flex; padding: 30px 10px">
+                                                <div>
+                                                    <a href="/order-detail/{{trans.id}}" style="margin-right: 10px; background: green;">Chi tiết</a>
+                                                    <a href="/orders/{{trans.id}}/cancel/" style="margin-right: 10px;">Hủy</a>
+                                                </div>
+                                            </td>
+                                            {% elif trans.status == "DELIVERING" %}
+                                            <td>Đang giao</td>
+                                            <td style="display: flex; padding: 35px 25px">
+                                                <div>
+                                                    <a href="/order-detail/{{trans.id}}" style="margin-right: 10px; background: green;">Chi tiết</a>
+                                                </div>
+                                            </td>
+                                            {% elif trans.status == "SUCCESS"  %}
+                                            <td>Thành công</td>
+                                            <td style="display: flex; padding: 30px 10px">
+                                                <div>
+                                                    <a href="/order-detail/{{trans.id}}" style="margin-right: 10px; background: green;">Chi tiết</a>
+                                                   <a href="/orders/{{trans.id}}/delete/" style="margin-right: 10px;">Xóa</a> 
+                                                </div>
+                                            </td>
+                                            {% else %}
+                                            <td>Đã hủy</td>
+                                            <td style="display: flex; padding: 30px 10px">
+                                                <div>
+                                                    <a href="/order-detail/{{trans.id}}" style="margin-right: 10px; background: green;">Chi tiết</a>
+                                                    <a href="/orders/{{trans.id}}/delete/"  style="margin-right: 10px;">Xóa</a>
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-left">
+                    <aside id="tg-sidebar" class="tg-sidebar">
+
+                        <div class="tg-widget tg-catagories">
+                            <div class="tg-widgettitle">
+                                <h3>Chức năng</h3>
+                            </div>
+                            <div class="tg-widgetcontent">
+                                <ul>
+                                    <li><a href="profile.php?infor">Đợi xác nhận</a></li>
+                                    <li><a href="profile.php?request">Đang giao</a></li>
+                                    <li><a href="profile.php?borrowed">Giao thành công</a></li>
+                                    <li><a href="profile.php?returned">Đã hủy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

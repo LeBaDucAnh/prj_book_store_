@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<center>
+    <div class="section"></div>
+
+    <div class="section">
+        <h3>ĐĂNG KÝ</h3>
+    </div>
+
+    <div class="container" style="margin-bottom: 10px">
+        <div style="display: inline-block;" >
+
+            <form action="/signup" class="col" method="POST">
+                {% csrf_token %}
+                {% if error%}
+                <div class='row'>
+                    <div class='col s12 alert alert-danger' role="alert">
+                        {{error}}
+                    </div>
+                </div>
+                {% endif %}
+                <div class='row'>
+                    <div class='input-field col'>
+                        <input type='text' name='fullname' id='fullname' value="{{values.fullname}}"/>
+                        <div class="error" style="color: red;"></div>
+                        <label for='fullname'>Họ và tên</label>
+                    </div>
+                </div>
+
+                <div class='row'>
+                    <div class='input-field col'>
+                        <input type='text' name='email' id='email' value="{{values.email}}"/>
+                        <div class="error" style="color: red;"></div>
+                        <label for='email'>Email</label>
+                    </div>
+                </div>
+
+                <div class='row'>
+                    <div class='input-field col'>
+                        <input type='password' name='password' id='password'/>
+                        <div class="error" style="color: red;"></div>
+                        <label for='password'>Mật khẩu</label>
+                    </div>
+                </div>
+
+                <br />
+
+                <center>
+                    <div class='row'>
+                        <input id="submit_button" type='submit' name='dangky' class='col s12 btn btn-large waves-effect indigo' value="Quên mật khẩu">
+                    </div> 
+                    <br/>
+                    <div class='row'>
+                        <input id="submit_button" type='submit' name='dangky' class='col s12 btn btn-large waves-effect indigo' value="Đăng ký">
+                    </div> 
+                    <br/>
+                    <label>
+                        <a class='pink-text' style="color: #17c77e !important; font-size: 14px;" href='/login'><b>Đã có tài khoản</b></a>
+                    </label>
+                </center>
+            </form>
+        </div>
+    </div>
+</center>
+
+{% endblock %}

@@ -23,3 +23,17 @@ class Book(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE, null=True)
     publisher = models.CharField(max_length=255, blank=True, null=True)
     
+    @staticmethod
+    def get_books_by_id(ids):
+        return Book.objects.filter (id__in=ids)
+    
+    @staticmethod
+    def get_all_books():
+        return Book.objects.all()
+
+    @staticmethod
+    def get_all_books_by_categoryid(category_id):
+        if category_id:
+            return Book.objects.filter (category=category_id)
+        else:
+            return Book.get_all_books()

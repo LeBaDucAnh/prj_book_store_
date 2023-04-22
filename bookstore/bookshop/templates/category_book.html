@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %}
+{% load cart %}
+{% load custom_filter %}
+{% block content %}
+
+<div id="tg-wrapper" class="tg-wrapper tg-haslayout">
+    <!--************************************
+            Inner Banner Start
+    *************************************-->
+    <div class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="images/parallax/bgparallax-07.jpg">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="tg-innerbannercontent">
+                        <h1>{{category.category_name}}</h1>
+                        <ol class="tg-breadcrumb">
+                            <li><a href="javascript:void(0);">Trang chủ</a></li>
+                            <li class="tg-active">Sách</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <main id="tg-main" class="tg-main tg-haslayout">
+        <!--************************************
+                News Grid Start
+        *************************************-->
+        <div class="tg-sectionspace tg-haslayout">
+            <div class="container">
+                <div class="row">
+                    <div id="tg-twocolumns" class="tg-twocolumns">
+                        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
+                            <div id="tg-content" class="tg-content">
+                                <div class="tg-products">
+                                    <div class="tg-productgrid">
+                                        {% for book in book_cata %}
+                                        <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                                            
+								<div class="item" id={{book.id}}>
+										<div class="tg-postbook">
+											<figure class="tg-featureimg">
+												<div class="tg-bookimg">
+													<div class="tg-frontcover"><img src="/media/{{book.image}}" alt="image description" style="height: 200px;"></div>
+													<div class="tg-backcover"><img src="/media/{{book.image}}" alt="image description" style="height: 200px;"></div>
+												</div>
+
+											</figure>
+											<div class="tg-postbookcontent">
+												<ul class="tg-bookscategories">
+													<li><a href="javascript:void(0);">{{book.category.category_name}}</a></li>
+												</ul>
+												<div class="tg-booktitle" style="height: 50px">
+													<h3><a href="/book/{{book.id}}/">{{book.book_name}}</a></h3>
+												</div>
+												<span class="tg-bookwriter" style="height: 50px">Tác giả : <a href="javascript:void(0);">{{book.author.author_name}}</a></span>
+												<span class="tg-bookwriter">Số lượng còn :  {{book.qty}}</span>
+												<span class="tg-bookwriter">Giá tiền :  {{book.unit_price}} VNĐ</span>
+												<span class="tg-stars"><span></span></span>
+												<input 	type="hidden" value="{{book.id}}" name="book">
+												{% if book|is_in_cart:request.session.cart %}
+												<div class="m-auto d-flex" style="display: flex; margin-top: 220px;">
+													<form action="/#{{book.id}}" class="d-flex justify-content-center align-items-center text-center " method="post">
+														{% csrf_token %}
+														<input type="hidden" name='book' value='{{book.id}}'>
+														<input type="hidden" name='remove' value='True'>
+														<input type="submit" value="-" class="btn btn-block btn-success border-right" style="width: 30px; margin-top: 10px">
+													</form>
+													<div class="d-flex justify-content-center align-items-center mx-1 btn btn-light"><input type="number" min="1" name='qty_book' value='{{book|cart_quantity:request.session.cart}}' style="width: 80px;"></div>
+													<form action="/#{{book.id}}" class="d-flex justify-content-center align-items-center " method="post">
+														{% csrf_token %}
+														<input type="hidden" name='book' value='{{book.id}}'>
+														<input type="submit" value="+" class="btn btn-block btn-success border-left"  style="width: 30px; margin-top: 10px">
+													</form>
+												</div>
+												{% else %}
+												<form action="/#{{book.id}}" method="POST" class="btn-block">
+													{% csrf_token %}
+													<input  type="hidden" name='book' value='{{book.id}}'>
+													<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
+														<button type="submit" class="themgiosach" name="themgiosach"><i class="fa fa-shopping-basket"></i>
+															<em>Thêm vào giỏ</em></button>
+													</a>
+												</form>
+												{% endif %}
+											</div>
+										</div>
+								</div>
+							
+                                        </div>{% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-left">
+                            <aside id="tg-sidebar" class="tg-sidebar">
+                                <div class="tg-widget tg-widgetsearch">
+                                    <form class="tg-formtheme tg-formsearch">
+                                        <div class="form-group">
+                                            <button type="submit"><i class="icon-magnifier"></i></button>
+                                            <input type="search" name="search" class="form-group" placeholder="Search by title, author, key...">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tg-widget tg-catagories">
+                                    <div class="tg-widgettitle">
+                                        <h3>Thể loại</h3>
+                                    </div>
+                                    <div class="tg-widgetcontent">
+                                        <ul>
+                                            {% for cat in categories %}
+                                            <li><a href="javascript:void(0);"><span>{{cat.category_name}}</span></a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--************************************
+                News Grid End
+        *************************************-->
+    </main>
+    <!--************************************
+            Main End
+    *************************************-->
+</div>
+{% endblock %}

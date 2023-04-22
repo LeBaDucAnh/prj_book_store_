@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% load static %}
+{% block content %}
+
+<div>
+  <!-- /.login-logo -->
+  <div style="flex: 1 0 auto;">
+  <center>
+    <div class="section"></div>
+
+    <div class="section">
+      <h3>ĐĂNG NHẬP</h3>
+    </div>
+
+    <div class="container">
+      <div style="display: inline-block;">
+
+        <form action="/login" autocomplete="on" method="POST">
+          {% csrf_token %}
+          <div class='row'>
+            {% if error%}
+            <div class='col s12 alert alert-danger' role="alert">
+              {{error}}
+            </div>
+          </div>
+          {% endif %}
+          <div class='row'>
+            <div class='input-field col'>
+              <input value="{{values.email}}" type='text' name='email' id='email' />
+              <label for='user_id'>Email</label>
+            </div>
+          </div>
+
+          <div class='row'>
+            <div class='input-field col'>
+              <input type='password' name='password' id='password' />
+              <label for='password'>Mật khẩu</label>
+            </div>
+            <!-- <label style='float: right;'>
+              <a class='pink-text' style="color: #17c77e !important;" href='#!'><b>Quên mật khẩu</b></a>
+            </label> -->
+          </div>
+
+          <br />
+          <center>
+            <div class='row'>
+              <button type='submit' name='login' class='col s12 btn btn-large waves-effect indigo'>Đăng nhập</button>
+            </div>
+          </center>
+        </form>
+      </div>
+    </div>
+    <div style="margin: 10px 0">
+      <a href="/signup">Đăng ký</a>
+    </div>
+    
+  </center>
+</div>
+</div>
+{% endblock %}
