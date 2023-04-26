@@ -4,9 +4,9 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Customer(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
-    password = models.CharField(max_length=100)
-    fullname = models.CharField(max_length=100)
-    email = models.EmailField()
+    password = models.CharField(max_length=100, null=True)
+    fullname = models.CharField(max_length=100, null=True)
+    email = models.EmailField(null=True)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 

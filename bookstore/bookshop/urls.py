@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from .views.home import *
 from .middlewares.auth import auth_middleware
+from .views.customer_views import *
 
 urlpatterns = [
     path('', Index.as_view(), name='homepage'),
@@ -18,5 +19,7 @@ urlpatterns = [
     path('category/<int:category_id>/', get_book_by_category),
     path('orders/<int:pk>/cancel/', order_cancel, name='order_cancel'),
     path('orders/<int:pk>/delete/', order_delete, name='order_delete'),
-    path('order-detail/<int:pk>', order_detail, name="order_detail")
+    path('order-detail/<int:pk>', order_detail, name="order_detail"),
+    path('customers/', CustomerList.as_view(), name='customer-list'),
+    path('customer/<int:pk>/', CustomerDetail.as_view(), name="customer-detail"),
 ]

@@ -13,6 +13,12 @@ class BookList(APIView):
         serializer = BookSerializer(books, many=True)
         return Response(serializer.data)
 
+    def post(self, request):
+        serializer = BookSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class BookRetrive(APIView):
 
     def get_object(self, pk):
@@ -20,13 +26,6 @@ class BookRetrive(APIView):
             return Book.objects.get(pk=pk)
         except Book.DoesNotExist:
             raise Http404
-
-    def post(self, request):
-        serializer = BookSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk):
         book = self.get_object(pk)
