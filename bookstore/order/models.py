@@ -20,7 +20,7 @@ class Order(models.Model):
 
 class Order_detail(models.Model):
     id = models.AutoField(primary_key=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, related_name='order_detail')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, blank=True)
     qty = models.IntegerField(blank=True)
     unit_price = models.IntegerField(blank=True)

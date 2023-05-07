@@ -5,6 +5,11 @@ from .models import Transaction
 from .serializers import TransactionSerializer
 from datetime import timezone
 from django.http import Http404
+from django.db.models import Count
+from django.http import JsonResponse
+from django.utils import timezone
+from django.db.models.functions import TruncDay
+from django.db.models import Sum
 class TransactionList(APIView):
     def get(self, request, format=None):
         transactions = Transaction.objects.all()
@@ -56,3 +61,29 @@ class TransactionDetail(APIView):
         transaction = self.get_object(pk)
         transaction.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+class order_statistics(APIView):
+    def get(self, request):
+        end_date = timezone.now()
+        start_date = end_date - timezone.timedelta(days=30)
+        confirmed_orders = Transaction.objects.filter(status='PENDING', created_at__gte=start_date, created_at__lte=end_date).count()
+        shipping_orders = Transaction.objects.filter(status='DELIVERING', created_at__gte=start_date, created_at__lte=end_date).count()
+        delivered_orders = Transaction.objects.filter(status='COMPLETED', created_at__gte=start_date, created_at__lte=end_date).count()
+        canceled_orders = Transaction.objects.filter(status='CANCELED', created_at__gte=start_date, created_at__lte=end_date).count()
+        data = {
+            'labels': ['Chờ xác nhận', 'Đang giao', 'Đã giao', 'Đã hủy'],
+            'values': [confirmed_orders, shipping_orders, delivered_orders, canceled_orders],
+        }
+        return Response(data)
+    
+class DailyRevenue(APIView):
+    def get(self, request):
+        daily_revenue = Transaction.objects.filter(status='COMPLETED').annotate(day=TruncDay('updated_at')).values('day').annotate(revenue=Sum('amount')).order_by('day')
+        print(daily_revenue)
+        data = [
+            { 'day': order['day'].strftime('%d/%m/%Y'), 'revenue': float(order['revenue']) } 
+            for order in daily_revenue
+        ]
+        return Response(data)

@@ -3,14 +3,17 @@
 {% load cart %}
 {% load custom_filter %}
 {% block content %}
-<div class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="images/parallax/bgparallax-07.jpg">
+{% block extrahead %}
+  <link href="{% static 'dist/css/rating.css' %}" rel="stylesheet">
+{% endblock %}
+<div class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="{% static 'users/images/parallax/bgparallax-07.jpg' %}">
     <div class="container">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <div class="tg-innerbannercontent">
                     <h1>Sách</h1>
                     <ol class="tg-breadcrumb">
-                        <li><a href="index.php">Trang chủ</a></li>
+                        <li><a href="/">Trang chủ</a></li>
                         <li class="tg-active"> <a href="products.php">Sách</a></li>
                         <li class="tg-active"> <a href="#">Chi tiết sách</a></li>
                     </ol>
@@ -70,7 +73,7 @@
                                             <span class="tg-bookwriter">Ngày xuất bản : {{book.publication_date}}</span>
                                             <span class="tg-bookwriter">Số trang : {{book.publisher}}</span>
                                             <span class="tg-stars"><span></span></span>
-                                            <div class="tg-share">
+                                            {% comment %} <div class="tg-share">
                                                 <span>Share:</span>
                                                 <ul class="tg-socialicons">
                                                     <li class="tg-facebook"><a href="javascript:void(0);"><i class="fa fa-facebook"></i></a></li>
@@ -79,9 +82,9 @@
                                                     <li class="tg-googleplus"><a href="javascript:void(0);"><i class="fa fa-google-plus"></i></a></li>
                                                     <li class="tg-rss"><a href="javascript:void(0);"><i class="fa fa-rss"></i></a></li>
                                                 </ul>
-                                            </div>
+                                            </div> {% endcomment %}
                                             <div class="tg-description">
-
+                                                <h3>Mô tả:</h3>
                                                 {{book.description}}
                                             </div>
                                         </div>
@@ -89,61 +92,144 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- <div class="row">
+                        <div class="tg-productdescription">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div class="tg-sectionhead">
-                                    <h2><span>Một số cuốn sách liên quan</span>Bạn có thể thích</h2>
+                                    <h2>Product Description</h2>
                                 </div>
-                            </div>
-                            <div id="tg-pickedbyauthorslider" class="tg-pickedbyauthor tg-pickedbyauthorslider owl-carousel">
-                                <?php
-                                while ($row2 = mysqli_fetch_array($querry_fvr)) {
-                                ?>
-                                    <div class="item">
-                                        <div class="tg-postbook" style=" padding: 0 0 20px;">
-                                            <figure class="tg-featureimg">
-                                                <div class="tg-bookimg">
-                                                    <div class="tg-frontcover"><img src="images/books/<?php echo $row2['image'] ?>" alt="image description"></div>
-                                                </div>
-                                                <div class="tg-hovercontent">
-                                                    <div class="tg-description">
-                                                        <p><?php echo $row2['descrip'] ?></p>
-                                                    </div>
-                                                    <strong class="tg-bookpage">Nhà xuất bản: <?php echo $row2['publisher'] ?></strong>
-                                                    <div class="tg-ratingbox"><span class="tg-stars"><span></span></span></div>
-                                                </div>
+                                <ul class="tg-themetabs" role="tablist">
+                                    <li role="presentation" class="active"><a href="#description" data-toggle="tab">Description</a></li>
+                                    <li role="presentation"><a href="#review" data-toggle="tab">Reviews</a></li>
+                                </ul>
+                                <div class="tg-tab-content tab-content">
+                                    <div role="tabpanel" class="tg-tab-pane tab-pane active" id="description">
+                                        <div class="tg-description">
+                                            <p>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenden
+voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                                            <figure class="tg-alignleft">
+                                                <img src="images/placeholdervtwo.jpg" alt="image description">
+                                                <iframe src="https://www.youtube.com/embed/aLwpuDpZm1k?rel=0&amp;controls=0&amp;showinfo=0"></iframe>
                                             </figure>
-                                            <div class="tg-postbookcontent">
-                                                <div class="tg-booktitle">
-                                                    <h3><a href="productdetail.php?quanly=sach&book_id=<?php echo $row2['book_id'] ?>"><?php echo $row2['book_name'] ?> </a></h3>
-                                                </div>
-                                                <span class="tg-bookwriter">Tác giả : <a href="javascript:void(0);"> <?php echo $row2['author_name'] ?></a></span>
-                                            </div>
+                                            <ul class="tg-liststyle">
+                                                <li><span>Sed do eiusmod tempor incididunt ut labore et dolore</span></li>
+                                                <li><span>Magna aliqua enim ad minim veniam</span></li>
+                                                <li><span>Quis nostrud exercitation ullamco laboris nisi ut</span></li>
+                                                <li><span>Aliquip ex ea commodo consequat aute dolor reprehenderit</span></li>
+                                                <li><span>Voluptate velit esse cillum dolore eu fugiat nulla pariatur</span></li>
+                                                <li><span>Magna aliqua enim ad minim veniam</span></li>
+                                                <li><span>Quis nostrud exercitation ullamco laboris nisi ut</span></li>
+                                            </ul>
+                                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam remmata aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enimsam
+voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos quistatoa.</p>
                                         </div>
                                     </div>
-                                <?php
-                                }
-                                ?>
-                            </div>
-                        </div> -->
-                    </div>
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-left">
-                        <aside id="tg-sidebar" class="tg-sidebar">
-                            <div class="tg-widget tg-catagories">
-                                    <div class="tg-widgettitle">
-                                        <h3>Danh mục ngành đào tạo</h3>
-                                    </div>
-                                    <div class="tg-widgetcontent">
-                                        <ul>
-                                            <?php while ($row_danhmuc = mysqli_fetch_array($query_danhmuc)) { ?>
-                                                <li><a href="products.php?main=book&id=<?php echo $row_danhmuc['nganh_id'] ?>"><?php echo $row_danhmuc['nganh_name'] ?> </a></li>
-                                            <?php } ?>
-                                        </ul>
+                                    <div role="tabpanel" class="tg-tab-pane tab-pane" id="review">
+                                        <div class="tg-description">
+                                            <p>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenden
+voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                                            <figure class="tg-alignleft">
+                                                <img src="images/placeholdervtwo.jpg" alt="image description">
+                                                <iframe src="https://www.youtube.com/embed/aLwpuDpZm1k?rel=0&amp;controls=0&amp;showinfo=0"></iframe>
+                                            </figure>
+                                            <ul class="tg-liststyle">
+                                                <li><span>Sed do eiusmod tempor incididunt ut labore et dolore</span></li>
+                                                <li><span>Magna aliqua enim ad minim veniam</span></li>
+                                                <li><span>Quis nostrud exercitation ullamco laboris nisi ut</span></li>
+                                                <li><span>Aliquip ex ea commodo consequat aute dolor reprehenderit</span></li>
+                                                <li><span>Voluptate velit esse cillum dolore eu fugiat nulla pariatur</span></li>
+                                                <li><span>Magna aliqua enim ad minim veniam</span></li>
+                                                <li><span>Quis nostrud exercitation ullamco laboris nisi ut</span></li>
+                                            </ul>
+                                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam remmata aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enimsam
+voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos quistatoa.</p>
+                                        </div>
                                     </div>
                                 </div>
-                            <?php include("tuongtac.php") ?>
-                        </aside>
+                            </div>
+                        </div>
+                        <div class="tg-aboutauthor">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="tg-sectionhead">
+                                    <h2>Bình luận</h2>
+                                </div>
+                                {% if comments %}
+                                <div class="tg-authorbox">
+                                    {% for review in comments %}
+                                    <div class="tg-authorinfo">
+                                        <div class="tg-authorhead">
+                                            <div class="tg-leftarea">
+                                                <div class="tg-authorname">
+                                                    <h2>{{ review.customer.fullname }}</h2>
+                                                    <span>{{review.created_at}}</span>
+                                                    <div>
+                                                        {% for i in stars %}
+                                                            {% if review.star >= i %}
+                                                                <span class="star full" style="display: inline-block"></span>
+                                                            {% comment %} {% elif review.star > (i-1) and review.star < i %}
+                                                                <span class="star half"></span> {% endcomment %}
+                                                            {% else %}
+                                                                <span class="star" style="display: inline-block"></span>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tg-description" style="border-top: 1px solid">
+                                            <p> {{ review.comment }}</p>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                    <p>Chưa có bình luận nào cho cuốn sách này.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% comment %} {% if user.is_authenticated %} {% endcomment %}
+                        <div class="row">
+                            <div class="tg-pickedbyauthor tg-pickedbyauthorslider">
+                                <div>
+                                    <h3><span>Thêm bình luận</span></h3>
+                                </div>
+                                {% comment %} <form method="POST" action="{% url 'book_detail' book.id %}">
+                                    {% csrf_token %}
+                                    <div class="rating-widget">
+                                        <input type="hidden" name="rating" id="rating-value">
+                                        <div class="star-ratings-css">
+                                          <ul>
+                                            <li data-value="1">&#9734;</li>
+                                            <li data-value="2">&#9734;</li>
+                                            <li data-value="3">&#9734;</li>
+                                            <li data-value="4">&#9734;</li>
+                                            <li data-value="5">&#9734;</li>
+                                          </ul>
+                                        </div>
+                                      </div>
+                                      {{ form.comment }}
+                                    </div>
+                                    {% comment %} {% csrf_token %}
+                                    {{ form.as_p }}
+                                    <button type="submit">Gửi bình luận</button> 
+                                </form> {% endcomment %}
+                                <div id="star">
+                                    <span class="stars" data-value="1">&#9734;</span>
+                                    <span class="stars" data-value="2">&#9734;</span>
+                                    <span class="stars" data-value="3">&#9734;</span>
+                                    <span class="stars" data-value="4">&#9734;</span>
+                                    <span class="stars" data-value="5">&#9734;</span>
+                                    {% comment %} <input type="text" id="rating-input" name="star" value="0"> {% endcomment %}
+                                  </div>
+                                  <form method="post">
+                                    {% csrf_token %}
+
+                                    {{ form.as_p }}
+                                    <button type="submit">Gửi đánh giá</button>
+                                  </form>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -158,4 +244,28 @@
                 News Grid End
         *************************************-->
 </main>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  {% comment %} <script>
+    $('.rating-widget ul li').on('click', function() {
+      var value = $(this).data('value');
+      $('#rating-value').val(value);
+      $('.rating-widget ul li').removeClass('active');
+      $(this).addClass('active');
+    });
+  </script> {% endcomment %}
+  <script>
+    $(document).ready(function() {
+      $('.stars').click(function() {
+        var value = $(this).data('value');
+        $('#rating-input').val(value);
+        $('.stars').each(function() {
+          if ($(this).data('value') <= value) {
+            $(this).html('&#9733;');
+          } else {
+            $(this).html('&#9734;');
+          }
+        });
+      });
+    });
+  </script>
 {% endblock %}

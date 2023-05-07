@@ -3,6 +3,9 @@ from django.urls import path
 from .views.home import *
 from .middlewares.auth import auth_middleware
 from .views.customer_views import *
+from django.contrib.auth import views as auth_views
+
+
 
 urlpatterns = [
     path('', Index.as_view(), name='homepage'),
@@ -22,4 +25,13 @@ urlpatterns = [
     path('order-detail/<int:pk>', order_detail, name="order_detail"),
     path('customers/', CustomerList.as_view(), name='customer-list'),
     path('customer/<int:pk>/', CustomerDetail.as_view(), name="customer-detail"),
+    path('update_quantity/', update_quantity, name='update_quantity'),
+    path('forgot-password/', forgot_password, name='forgot_password'),
+    path('password-reset/', auth_views.PasswordResetView.as_view(template_name='password_reset.html'), name='password_reset'),
+    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
+    path('password-reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html'), name='password_reset_confirm'),
+    path('password-reset/complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
+    path('profile', view_profile, name='profile'),
+    path('edit-profile', edit_profile, name='edit_profile'),
+    path('change-password', change_password, name='change_password'),
 ]

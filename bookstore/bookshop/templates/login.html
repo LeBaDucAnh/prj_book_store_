@@ -26,8 +26,8 @@
           </div>
           {% endif %}
           <div class='row'>
-            <div class='input-field col'>
-              <input value="{{values.email}}" type='text' name='email' id='email' />
+            <div>
+              <input value="{{values.email}}" type='text' name='email' id='email' style="text-transform: none;"/>
               <label for='user_id'>Email</label>
             </div>
           </div>
@@ -53,8 +53,13 @@
     </div>
     <div style="margin: 10px 0">
       <a href="/signup">Đăng ký</a>
+      <label>
+        <a class='pink-text' style="color: red; !important;" href='/forgot-password/'><b>Quên mật khẩu</b></a>
+      </label>
     </div>
-    
+    {% comment %} <div style="margin: 10px 10px">
+      <a href="/signup" style="color: red">Quên mật khẩu</a>
+    </div> {% endcomment %}
   </center>
 </div>
 </div>

@@ -4,6 +4,7 @@ from rest_framework import status
 from .models import *
 from .serializers import ReviewSerializer
 from django.http import Http404
+from bookshop.models import Customer
 class ReviewList(APIView):
     def get(self, request, format=None):
         reviews = Review.objects.all()
@@ -11,11 +12,11 @@ class ReviewList(APIView):
         data = serializer.data
         for review in data:
             book_id = review['book']
-            user_id = review['user']
+            customer_id = review['customer']
             book = Book.objects.get(id=book_id)
-            user = User.objects.get(id=user_id)
+            customer = Customer.objects.get(id=customer_id)
             review['book_name'] = book.book_name
-            review['fullname'] = user.fullname
+            review['fullname'] = customer.fullname
         print(serializer.data)
         return Response(serializer.data)
 
@@ -45,3 +46,8 @@ class ReviewDetail(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        order = self.get_object(pk)
+        order.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

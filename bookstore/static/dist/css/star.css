@@ -1,0 +1,46 @@
+.star {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin: 0.1em;
+    position: relative;
+    color: #ccc;
+  }
+  
+  .star:before,
+  .star:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .star:before {
+    color: gold;
+  }
+  
+  .star.full:before {
+    content: "\2605";
+  }
+  
+
+  .star {
+  font-size: 1em;
+}
+
+.star:hover:before,
+.star:hover~.star:before {
+  color: yellow;
+}
+
+.star.full:before {
+  color: yellow;
+  font-size: 2em;
+}
+
+.star.half:after {
+  color: yellow;
+}

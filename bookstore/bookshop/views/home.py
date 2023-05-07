@@ -11,9 +11,72 @@ from django.contrib.auth.hashers import  check_password, make_password
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django import forms
+from review.models import *
+from django.urls import reverse
+from django.contrib.auth.forms import PasswordResetForm
+from django.core.mail import send_mail
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 
 # Create your views here.
+def cart_product(self , request):
+        ids = list(request.session.get('cart').keys())
+        products = Book.get_books_by_id(ids)
+        print(products)
+        return render(request , 'cart.html' ,  {'books' : products})
+class Cart(View):
+    def get(self , request):
+        ids = list(request.session.get('cart').keys())
+        products = Book.get_books_by_id(ids)
+        print(products)
+        return render(request , 'cart.html' ,  {'books' : products})
+        #return HttpResponseRedirect(f'/cả{request.get_full_path()[1:]}', )
+    
+    def post(self , request):
+        book = request.POST.get('book')
+        remove = request.POST.get('remove')
+        cart = request.session.get('cart')
+        dele = request.POST.get('dele')
+        if cart:
+            quantity = cart.get(book)
+            if quantity:
+                if not remove:
+                    cart[book] = quantity+1
+                else:
+                    if quantity<=1:
+                        cart.pop(book)
+                    # elif dele:
+                    #     cart.pop(book)
+                    else:
+                        cart[book]  = quantity-1
+            # else:
+            #     cart[book] = 1
+        else:
+            cart = {}
+            cart[book] = 1
+
+        request.session['cart'] = cart
+        print('cart' , request.session['cart'])
+        print(book)
+        return redirect('cart')
+
+    def delete(self, request):
+        book = request.POST.get('book')
+        cart = request.session.get('cart')
+        
+        if cart:
+            quantity = 0
+            cart.pop(book)
+        
+        request.session['cart'] = cart
+        return redirect('cart')
+
+    # def get(self , request):
+    #     # print()
+    #     return HttpResponseRedirect(f'{request.get_full_path()[1:]}')
+
 class Index(View):
     def post(self , request):
         book = request.POST.get('book')
@@ -165,12 +228,7 @@ class Signup (View):
 
         return error_message
 
-class Cart(View):
-    def get(self , request):
-        ids = list(request.session.get('cart').keys())
-        products = Book.get_books_by_id(ids)
-        print(products)
-        return render(request , 'cart.html' , {'books' : products} )
+
 
 class CheckOut(View):
     def post(self, request):
@@ -185,7 +243,10 @@ class CheckOut(View):
             qty=cart.get(str(product.id))
             unit_price=product.unit_price
             total +=  qty * unit_price
-        
+            bookss = Book.objects.get(id = product.id)
+            bookss.qty -= qty
+            bookss.save()
+    
         transaction = Transaction(
             customer=Customer(id =customer),
             fullname=get_fullname(customer),
@@ -216,7 +277,7 @@ class CheckOut(View):
 
         request.session['cart'] = {}
 
-        messages.success(request, 'Your order has been placed.')
+        messages.success(request, 'Đặt hàng thành công.')
         return redirect('homepage')
     
 
@@ -226,7 +287,18 @@ class OrderView(View):
         trans = Transaction.get_transaction_by_customer(customer)
         print(trans)
         return render(request , 'orders.html'  , {'transaction' : trans})
-    
+
+class CommentForm(forms.ModelForm):
+    # star = forms.IntegerField(widget=forms.HiddenInput())
+    class Meta:
+        model = Review
+        fields = ['star', 'comment']
+    #     widgets = {
+    #         'comment': forms.Textarea(attrs={'rows': 3})
+    #     }
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['star'].widget.attrs['class'] = 'rating-widget'
 
 
 class AuthorView(View):
@@ -263,7 +335,24 @@ def book(request):
 
 def book_detail(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
-    return render(request, 'book_detail.html', {'book': book})
+    comments = book.reviews.all()
+    if request.session.get('customer'):
+        customer_id = request.session.get('customer')
+        customer = get_object_or_404(Customer, pk = customer_id)
+        fullname = Customer.objects.filter(id = customer_id).values('fullname')
+        # data['customer']  = fullname[0]['fullname']
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save()
+            comment.customer = customer
+            comment.book = book
+            comment.save()
+            return redirect('book_detail', book_id=book.id)
+    else:
+        form = CommentForm()
+    data = [1, 2, 3, 4, 5]
+    return render(request, 'book_detail.html', {'book': book,'comments': comments, 'form': form, 'stars': data})
 
 def get_book_by_category(request, category_id):
     book = Book.get_all_books_by_categoryid(category_id)
@@ -299,9 +388,103 @@ def order_cancel(request, pk):
         transaction.status = "CANCELED"
         transaction.save()
         customer = request.session.get('customer')
-        trans = Transaction.get_transaction_by_customer(customer) 
+        trans = Transaction.get_transaction_by_customer(customer)
+        print(transaction) 
+        print(transaction.id)
+        items = Order.get_orders_by_transaction(transaction.id)
+        print(items)
+        id_value = items['id']
+        order_detail = Order_detail.get_orders_detail(id_value)
+        for order in order_detail:
+            print(order.book.id)
+            book = Book.objects.get(pk = order.book.id)
+            book.qty += order.qty
+            book.save()
         return render(request, 'orders.html',{'transaction' : trans})
     else:
         return JsonResponse({'status': 'error', 'message': 'Cannot cancel confirmed order.'})
     
-        
+class ForgotPasswordForm(forms.Form):
+    email = forms.EmailField(label='Email', max_length=254, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+
+def forgot_password(request):
+    if request.method == 'POST':
+        form = ForgotPasswordForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            print(email)
+            try:
+                user = Customer.objects.get(email=email)
+                print(user)
+            except Customer.DoesNotExist:
+                user = None
+            if user is not None:
+                form = PasswordResetForm({'email': email})
+                if form.is_valid():
+                    form.save(
+                        request=request,
+                        use_https=request.is_secure(),
+                        subject_template_name='registration/password_reset_subject.txt',
+                        email_template_name='registration/password_reset_email.html',
+                        html_email_template_name='registration/password_reset_email.html',
+                    )
+                    return HttpResponseRedirect(reverse('password_reset_done'))
+    else:
+        form = ForgotPasswordForm()
+    return render(request, 'forgot_password.html', {'form': form})
+
+
+
+def update_quantity(request):
+    if request.method == 'POST':
+        book_id = request.POST.get('book_id')
+        qty = request.POST.get('qty')
+        # Cập nhật số lượng cần mua
+        # ...
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+
+class CustomerForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ['fullname', 'email']
+
+def edit_profile(request):
+    customer_id = request.session.get('customer')
+    customer = Customer.objects.get(id=customer_id)
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, instance=customer)
+        if form.is_valid():
+            # Lưu thông tin cá nhân của khách hàng
+            form.save()
+            # và chuyển hướng đến trang thông tin cá nhân
+            return redirect('profile')
+    else:
+        # Hiển thị form để cho khách hàng cập nhật thông tin cá nhân
+        form = CustomerForm(instance=customer)
+    return render(request, 'edit_info.html', {'form': form})
+
+def view_profile(request):
+    customer_id = request.session.get('customer')
+    customer = Customer.objects.get(id=customer_id)
+    return render(request, 'profile.html', {'customer': customer})
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Mật khẩu hiện tại'}))
+    new_password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Mật khẩu mới'}))
+    new_password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Xác nhận mật khẩu mới'}))
+
+def change_password(request):
+    if request.method == 'POST':
+        customer_id = request.session.get('customer')
+        form = CustomPasswordChangeForm(customer_id, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Mật khẩu đã được thay đổi thành công.')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Vui lòng sửa các lỗi bên dưới.')
+    else:
+        form = CustomPasswordChangeForm(request.user)
+    return render(request, 'change_pass.html', {'form': form})

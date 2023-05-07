@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Infor{% endblock %}
+{% load static %}
+{% block content %}
+
+<div class="tg-products" style="margin: 20px">
+    <div class="tg-sectionhead">
+        <h2>Thông tin cá nhân
+        </h2>
+        <button>
+    </div>
+    <div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <div class="tg-postbook">
+                <figure class="tg-featureimg"><img src="{% static 'dist/img/avatar.png' %}" alt="image description"></figure>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+            <div class="tg-productcontent">
+                <div class="tg-booktitle">
+                    <h3 style="padding-bottom:10px;">{{customer.fullname}}</h3>
+                    <h4 style="text-transform: none; margin-bottom: 20px">Email : <span>{{customer.email}}</span></h4>
+                    
+                    <a href="/edit-profile" style="padding: 10px; color: white; background: green; border: 1px solid;  border-radius: 10px;">Sửa thông tin</a>
+                    <a href="/change-password" style="padding: 10px; color: white; background: red; border: 1px solid;  border-radius: 10px;">Đổi mật khẩu</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

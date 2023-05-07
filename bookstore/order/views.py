@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 import datetime
 from rest_framework.decorators import api_view
 from book.models import Book
-
+from django.http import JsonResponse
 
 class OrderList(APIView):
     def get(self, request, format=None):
@@ -64,8 +64,33 @@ class OrderDetail(APIView):
         order.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class GetAllOrderProduct(APIView):
+    def get_object(self, pk):
+        try:
+            return Order.objects.get(transaction=pk)
+        except Order.DoesNotExist:
+            raise Http404
+    
+    def get(self, request, pk):
+        order_detail = self.get_object(pk)
+        serializer = OrderSerializer(order_detail)
+        return Response(serializer.data)
 
-
+class GetAllOrderDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Order_detail.objects.filter(order=pk).values()
+        except Order_detail.DoesNotExist:
+            raise Http404
+    
+    def get(self, request, pk):
+        try:
+            order = Order.objects.get(id=pk)
+            order_details = order.order_detail.all()
+            serializer = OrderDetailSerializer(order_details, many=True)
+            return Response(serializer.data)
+        except Order.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 class OrderDetailList(APIView):
     def get(self, request):
@@ -225,3 +250,19 @@ def checkout(request):
         return Response({'success': False, 'error': 'Cart is empty'})
 
 
+def report(request):
+    # Lấy danh sách sách trong kho
+    books = Book.objects.all()
+    book_data = [{'title': book.book_name, 'quantity': book.qty} for book in books]
+
+    # Lấy danh sách đơn hàng trong ngày hôm nay
+    today = datetime.date.today()
+    orders = Transaction.objects.filter(updated_at__date=today, status='COMPLETED')
+    revenue = sum([order.amount for order in orders])
+
+    # Trả về dữ liệu dưới dạng JSON
+    data = {
+        'revenue': revenue,
+        'books': book_data,
+    }
+    return JsonResponse(data)

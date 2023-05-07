@@ -52,30 +52,37 @@
 												<span class="tg-bookwriter">Giá tiền :  {{book.unit_price}} VNĐ</span>
 												<span class="tg-stars"><span></span></span>
 												<input 	type="hidden" value="{{book.id}}" name="book">
-												{% if book|is_in_cart:request.session.cart %}
-												<div class="m-auto d-flex" style="display: flex; margin-top: 220px;">
-													<form action="/#{{book.id}}" class="d-flex justify-content-center align-items-center text-center " method="post">
+												{% if book.qty != 0  %}
+													{% if book|is_in_cart:request.session.cart %}
+													<div class="m-auto d-flex" style="display: flex; margin-top: 220px;">
+														<form action="/#{{book.id}}" class="d-flex justify-content-center align-items-center text-center " method="post">
+															{% csrf_token %}
+															<input type="hidden" name='book' value='{{book.id}}'>
+															<input type="hidden" name='remove' value='True'>
+															<input type="submit" value="-" class="btn btn-block btn-success border-right" style="width: 30px; margin-top: 10px">
+														</form>
+														<div class="d-flex justify-content-center align-items-center mx-1 btn btn-light">
+															<input type="number" id="quantity-input" min="1" max="{{book.qty}}" name='qty_book' value='{{book|cart_quantity:request.session.cart}}' style="width: 80px;">
+														 </div>
+														<form action="/#{{book.id}}" class="d-flex justify-content-center align-items-center " method="post">
+															{% csrf_token %}
+															<input type="hidden" name='book' value='{{book.id}}'>
+															<input type="submit" value="+" class="btn btn-block btn-success border-left"  style="width: 30px; margin-top: 10px">
+														</form>
+													</div>
+													{% else %}
+													<form action="/#{{book.id}}" method="POST" class="btn-block">
 														{% csrf_token %}
-														<input type="hidden" name='book' value='{{book.id}}'>
-														<input type="hidden" name='remove' value='True'>
-														<input type="submit" value="-" class="btn btn-block btn-success border-right" style="width: 30px; margin-top: 10px">
+														<input  type="hidden" name='book' value='{{book.id}}'>
+														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
+															<button type="submit" class="themgiosach" name="themgiosach"><i class="fa fa-shopping-basket"></i>
+																<em>Thêm vào giỏ</em></button>
+														</a>
 													</form>
-													<div class="d-flex justify-content-center align-items-center mx-1 btn btn-light"><input type="number" min="1" name='qty_book' value='{{book|cart_quantity:request.session.cart}}' style="width: 80px;"></div>
-													<form action="/#{{book.id}}" class="d-flex justify-content-center align-items-center " method="post">
-														{% csrf_token %}
-														<input type="hidden" name='book' value='{{book.id}}'>
-														<input type="submit" value="+" class="btn btn-block btn-success border-left"  style="width: 30px; margin-top: 10px">
-													</form>
-												</div>
+													{% endif %}
 												{% else %}
-												<form action="/#{{book.id}}" method="POST" class="btn-block">
-													{% csrf_token %}
-													<input  type="hidden" name='book' value='{{book.id}}'>
-													<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-														<button type="submit" class="themgiosach" name="themgiosach"><i class="fa fa-shopping-basket"></i>
-															<em>Thêm vào giỏ</em></button>
-													</a>
-												</form>
+												<button type="submit" disabled class="themgiosach" name="themgiosach"><i class="fa fa-shopping-basket"></i>
+													<em>Thêm vào giỏ</em></button>
 												{% endif %}
 											</div>
 										</div>
@@ -157,7 +164,7 @@
 	<!--************************************
 					Collection Count Start
 			*************************************-->
-	<section class="tg-parallax tg-bgcollectioncount tg-haslayout" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="images/parallax/bgparallax-04.jpg">
+	<section class="tg-parallax tg-bgcollectioncount tg-haslayout" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="{% static 'users/images/parallax/bgparallax-04.jpg' %}">
 		<div class="tg-sectionspace tg-collectioncount tg-haslayout">
 			<div class="container">
 				<div class="row">
@@ -210,7 +217,7 @@
 	<!--************************************
 					Testimonials Start
 			*************************************-->
-	<section class="tg-parallax tg-bgtestimonials tg-haslayout" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="images/parallax/bgparallax-05.jpg">
+	<section class="tg-parallax tg-bgtestimonials tg-haslayout" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="{% static 'users/images/parallax/bgparallax-05.jpg' %}">
 		<div class="tg-sectionspace tg-haslayout">
 			<div class="container">
 				<div class="row">
@@ -256,4 +263,34 @@
 				Main End
 		*************************************-->
 	</div>
+	<script>
+		const quantityInput = document.getElementById('quantity-input');
+		quantityInput.addEventListener('change', (event) => {
+			const productID = '{{ book.id }}';
+			const quantity = event.target.value;
+			const url = '{% url "update_quantity" %}';
+			const data = {
+				'book_id': productID,
+				'qty': quantity
+			};
+			fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					// Cập nhật số lượng thành công
+				} else {
+					// Cập nhật số lượng không thành công
+				}
+			})
+			.catch(error => {
+				// Xử lý lỗi
+			});
+		});
+	</script>
 {% endblock %}

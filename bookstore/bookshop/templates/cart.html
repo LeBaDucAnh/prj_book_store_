@@ -9,15 +9,15 @@
         <!--************************************
 				Inner Banner Start
 		*************************************-->
-        <div class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="../../media/static/images/bgparallax-07.jpg">
+        <div class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="{% static 'users/images/parallax/bgparallax-07.jpg' %}">
             <div class="container">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="tg-innerbannercontent">
-                            <h1>Sách</h1>
+                            <h1>Giỏ sách</h1>
                             <ol class="tg-breadcrumb">
-                                <li><a href="index.php">Trang chủ</a></li>
-                                <li class="tg-active"> <a href="products.php">Giỏ sách</a></li>
+                                <li><a href="#">Trang chủ</a></li>
+                                <li class="tg-active"> <a href="#">Giỏ sách</a></li>
                             </ol>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                                                     <th>Hình ảnh</th>
                                                     <th>Số lượng</th>
                                                     <th>Đơn giá</th>
-                                                    <th>Tổng tiền</th>
+                                                    <th>Thành tiền</th>
                                                     <th>Quản lý</th>
                                                 </tr>
                                             </thead>
@@ -83,13 +83,35 @@
                                                             <td>{{book.book_name}}</td>
                                                             <td><img src="../media/{{book.image}}" alt="image description" style="height: 100px;"></td>
                                                             <td>
-                                                                <a class="add-minus" href="#"><i class="fa fa-minus"></i></a>
-                                                                {{book|cart_quantity:request.session.cart}}
-                                                                <a class="add-minus" href="#"><i class="fa fa-plus"></i></a>
+                                                                {% if book|is_in_cart:request.session.cart %}
+                                                                <div class="m-auto d-flex" style="display: flex">
+                                                                <form action="/#{{book.id}}" class="d-flex justify-content-center align-items-center text-center " method="post">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name='book' value='{{book.id}}'>
+														            <input type="hidden" name='remove' value='True'>
+														            <input type="submit" value="-" class="btn btn-block btn-success border-right" style="width: 30px; margin-top: 10px">
+                                                                    {% comment %} <div class="d-flex justify-content-center align-items-center mx-1 btn btn-light"><input type="number" min="1" max="{{book.qty}}" name='qty_book' value='{{book|cart_quantity:request.session.cart}}' style="width: 80px;"></div> {% endcomment %}
+                                                                </form>
+                                                                <div class="d-flex justify-content-center align-items-center mx-1 btn btn-light"><input type="number" min="1" max="{{book.qty}}" name='qty_book' value='{{book|cart_quantity:request.session.cart}}' style="width: 80px;"></div>
+                                                                <form action="/#{{book.id}}" class="d-flex justify-content-center align-items-center text-center" method="post">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name='book' value='{{book.id}}'>
+                                                                    {% comment %} <input type="hidden" name='plus' value='True'> {% endcomment %}
+                                                                    <input type="submit" value="+" class="btn btn-block btn-success border-left"  style="width: 30px; margin-top: 10px">
+                                                                </form>
+                                                                {% endif %}
+                                                            </div>
                                                             </td>
-                                                            <td>{{book.unit_price}} VNĐ</td>
-                                                            <td class="total">{{book|price_total:request.session.cart}} VNĐ</td>
-                                                            <td><a href="#">Xóa </a></td>
+                                                            <td style="font-size : 15px">{{book.unit_price}} VNĐ</td>
+                                                            <td class="total" style="font-size : 15px">{{book|price_total:request.session.cart}} VNĐ</td>
+                                                            <td>
+                                                                <form action="/#{{book.id}}" method="delete">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name='book' value='{{book.id}}'>
+                                                                    <input type="submit" value="Xóa" class="btn btn-block btn-danger border-right">
+                                                                </form>
+                                                                {% comment %} <a href="#">Xóa </a> {% endcomment %}
+                                                            </td>
                                                         </tr>
                                                 {% endfor %}
                                                         
@@ -97,7 +119,7 @@
                                                         <td colspan="7">
                                                             <h5 style="color: red; text-align: left;">Tổng tiền :
                                                                 <span style="color:#00A963 ;">
-                                                                    {{books|total_cart_price:request.session.cart}} VND
+                                                                    {{books|total_cart_price:request.session.cart}} VNĐ
                                                                 </span>
                                                         </h5>
                                                         </td>

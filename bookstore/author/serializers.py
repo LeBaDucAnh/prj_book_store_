@@ -3,7 +3,7 @@ from .models import *
 from rest_framework import serializers
 
 class AuthorSerializer(ModelSerializer):
-    author_image = serializers.SerializerMethodField()
+    #author_image = serializers.SerializerMethodField()
     class Meta:
         model = Author
         fields = '__all__'

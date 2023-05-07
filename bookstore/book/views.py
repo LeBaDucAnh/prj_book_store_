@@ -6,6 +6,8 @@ from .serializers import BookSerializer
 from django.http import Http404
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from order.models import *
+from django.db.models import Sum
 
 class BookList(APIView):
     def get(self, request):
@@ -52,4 +54,15 @@ class BookDetail(APIView):
         serializer = BookSerializer(book)
         return Response(serializer.data)
 
-    
+class BookStats(APIView):
+    def get(self, request):
+        products = Book.objects.all()
+        data = [
+            { 
+              'name': product.book_name, 
+              'inventory': product.qty,
+              'sales': Order_detail.objects.filter(book=product).aggregate(total_sales=Sum('qty'))['total_sales'] or 0
+            } 
+            for product in products
+        ]
+        return Response(data)    

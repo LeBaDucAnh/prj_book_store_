@@ -5,7 +5,7 @@ from book.models import Book
 # Create your models here.
 class Review(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, null=True)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, null=True, related_name='reviews')
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)
     book_name = models.CharField(max_length=255, null=True)
     fullname = models.CharField(max_length=255, null=True)

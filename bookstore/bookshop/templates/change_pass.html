@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Change password{% endblock %}
+{% load static %}
+{% block content %}
+  <h3>Đổi mật khẩu</h3>
+  <form method="post" style="padding: 20px">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group">
+        {{ field }}
+        {% for error in field.errors %}
+          <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Lưu</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,24 @@
+.star-ratings-css {
+    unicode-bidi: bidi-override;
+    color: #c5c5c5;
+    font-size: 25px;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .star-ratings-css ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+  }
+  
+  .star-ratings-css ul li {
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .star-ratings-css ul li.active {
+    color: #ffca08;
+  }
