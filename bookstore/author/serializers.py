@@ -8,9 +8,9 @@ class AuthorSerializer(ModelSerializer):
         model = Author
         fields = '__all__'
 
-    def get_author_image(self, obj):
-        request = self.context.get('request')
-        image_url = obj.author_image.url
-        if request is not None:
-            return request.build_absolute_uri(image_url)
-        return image_url
+    # def get_author_image(self, obj):
+    #     request = self.context.get('request')
+    #     image_url = obj.author_image.url
+    #     if request is not None:
+    #         return request.build_absolute_uri(image_url)
+    #     return image_url

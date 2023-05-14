@@ -14,7 +14,7 @@
                     <h1>Sách</h1>
                     <ol class="tg-breadcrumb">
                         <li><a href="/">Trang chủ</a></li>
-                        <li class="tg-active"> <a href="products.php">Sách</a></li>
+                        <li class="tg-active"> <a href="#">Sách</a></li>
                         <li class="tg-active"> <a href="#">Chi tiết sách</a></li>
                     </ol>
                 </div>
@@ -45,12 +45,33 @@
                                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                                             <div class="tg-postbook">
                                                 <figure class="tg-featureimg"><img src="/media/{{book.image}}" alt="image description"></figure>
-                                                <div class="tg-postbookcontent">
-                                                    <a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-                                                        <button type="submit" class="themgiosach" name="themgiosach"><i class="fa fa-shopping-basket"></i>
-                                                            <em>Thêm vào giỏ</em></button>
-                                                    </a>
+													{% if book|is_in_cart:request.session.cart %}
+                                                <div class="tg-postbookcontent m-auto d-flex" style="display: flex">    
+                                                    <form action="/#{{book.id}}" class="d-flex justify-content-center align-items-center text-center " method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name='book' value='{{book.id}}'>
+                                                        <input type="hidden" name='remove' value='True'>
+                                                        <input type="submit" value="-" class="btn btn-block btn-success border-right" style="width: 30px; height: 35px; margin-top: 10px">
+                                                    </form>
+                                                    <div class="d-flex justify-content-center align-items-center mx-1 btn btn-light">
+                                                        <input type="number" id="quantity-input" min="1" max="{{book.qty}}" name='qty_book' value='{{book|cart_quantity:request.session.cart}}' style="width: 80px;">
+                                                    </div>
+                                                    <form action="/#{{book.id}}" class="d-flex justify-content-center align-items-center " method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name='book' value='{{book.id}}'>
+                                                        <input type="submit" value="+" class="btn btn-block btn-success border-left"  style="width: 30px; margin-top: 10px">
+                                                    </form>
                                                 </div>
+                                                {% else %}
+													<form action="/#{{book.id}}" method="POST" class="btn-block">
+														{% csrf_token %}
+														<input  type="hidden" name='book' value='{{book.id}}'>
+														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
+															<button type="submit" class="themgiosach" name="themgiosach"><i class="fa fa-shopping-basket"></i>
+																<em>Thêm vào giỏ</em></button>
+														</a>
+													</form>
+													{% endif %}
                                             </div>
                                         </div>
                                     </form>
@@ -92,61 +113,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tg-productdescription">
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div class="tg-sectionhead">
-                                    <h2>Product Description</h2>
-                                </div>
-                                <ul class="tg-themetabs" role="tablist">
-                                    <li role="presentation" class="active"><a href="#description" data-toggle="tab">Description</a></li>
-                                    <li role="presentation"><a href="#review" data-toggle="tab">Reviews</a></li>
-                                </ul>
-                                <div class="tg-tab-content tab-content">
-                                    <div role="tabpanel" class="tg-tab-pane tab-pane active" id="description">
-                                        <div class="tg-description">
-                                            <p>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenden
-voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-                                            <figure class="tg-alignleft">
-                                                <img src="images/placeholdervtwo.jpg" alt="image description">
-                                                <iframe src="https://www.youtube.com/embed/aLwpuDpZm1k?rel=0&amp;controls=0&amp;showinfo=0"></iframe>
-                                            </figure>
-                                            <ul class="tg-liststyle">
-                                                <li><span>Sed do eiusmod tempor incididunt ut labore et dolore</span></li>
-                                                <li><span>Magna aliqua enim ad minim veniam</span></li>
-                                                <li><span>Quis nostrud exercitation ullamco laboris nisi ut</span></li>
-                                                <li><span>Aliquip ex ea commodo consequat aute dolor reprehenderit</span></li>
-                                                <li><span>Voluptate velit esse cillum dolore eu fugiat nulla pariatur</span></li>
-                                                <li><span>Magna aliqua enim ad minim veniam</span></li>
-                                                <li><span>Quis nostrud exercitation ullamco laboris nisi ut</span></li>
-                                            </ul>
-                                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam remmata aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enimsam
-voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos quistatoa.</p>
-                                        </div>
-                                    </div>
-                                    <div role="tabpanel" class="tg-tab-pane tab-pane" id="review">
-                                        <div class="tg-description">
-                                            <p>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenden
-voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-                                            <figure class="tg-alignleft">
-                                                <img src="images/placeholdervtwo.jpg" alt="image description">
-                                                <iframe src="https://www.youtube.com/embed/aLwpuDpZm1k?rel=0&amp;controls=0&amp;showinfo=0"></iframe>
-                                            </figure>
-                                            <ul class="tg-liststyle">
-                                                <li><span>Sed do eiusmod tempor incididunt ut labore et dolore</span></li>
-                                                <li><span>Magna aliqua enim ad minim veniam</span></li>
-                                                <li><span>Quis nostrud exercitation ullamco laboris nisi ut</span></li>
-                                                <li><span>Aliquip ex ea commodo consequat aute dolor reprehenderit</span></li>
-                                                <li><span>Voluptate velit esse cillum dolore eu fugiat nulla pariatur</span></li>
-                                                <li><span>Magna aliqua enim ad minim veniam</span></li>
-                                                <li><span>Quis nostrud exercitation ullamco laboris nisi ut</span></li>
-                                            </ul>
-                                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam remmata aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enimsam
-voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos quistatoa.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="tg-aboutauthor">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div class="tg-sectionhead">
@@ -165,8 +131,6 @@ voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntu
                                                         {% for i in stars %}
                                                             {% if review.star >= i %}
                                                                 <span class="star full" style="display: inline-block"></span>
-                                                            {% comment %} {% elif review.star > (i-1) and review.star < i %}
-                                                                <span class="star half"></span> {% endcomment %}
                                                             {% else %}
                                                                 <span class="star" style="display: inline-block"></span>
                                                             {% endif %}
@@ -212,21 +176,27 @@ voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntu
                                     {% comment %} {% csrf_token %}
                                     {{ form.as_p }}
                                     <button type="submit">Gửi bình luận</button> 
-                                </form> {% endcomment %}
-                                <div id="star">
+                                </form> 
+                                    <div id="star">
                                     <span class="stars" data-value="1">&#9734;</span>
                                     <span class="stars" data-value="2">&#9734;</span>
                                     <span class="stars" data-value="3">&#9734;</span>
                                     <span class="stars" data-value="4">&#9734;</span>
                                     <span class="stars" data-value="5">&#9734;</span>
-                                    {% comment %} <input type="text" id="rating-input" name="star" value="0"> {% endcomment %}
-                                  </div>
+                                    {% comment %} <input type="text" id="rating-input" name="star" value="0">
+                                  </div>{% endcomment %}
                                   <form method="post">
                                     {% csrf_token %}
-
-                                    {{ form.as_p }}
-                                    <button type="submit">Gửi đánh giá</button>
-                                  </form>
+                                    <div class="star-rating">
+                                        {% for choice in form.star %}
+                                            <span data-stars="{{ choice.0 }}">{{ choice.tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {{ form.comment }}
+                                    <div style="margin-top: 10px">
+                                    <button type="submit" style="padding: 5px; border: 1px solid; border-radius: 5px">Gửi đánh giá</button>
+                                    </div> 
+                                </form>
                             </div>
                         </div>
                         
@@ -245,27 +215,23 @@ voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntu
         *************************************-->
 </main>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  {% comment %} <script>
-    $('.rating-widget ul li').on('click', function() {
-      var value = $(this).data('value');
-      $('#rating-value').val(value);
-      $('.rating-widget ul li').removeClass('active');
-      $(this).addClass('active');
-    });
-  </script> {% endcomment %}
-  <script>
+<script>
     $(document).ready(function() {
-      $('.stars').click(function() {
-        var value = $(this).data('value');
-        $('#rating-input').val(value);
-        $('.stars').each(function() {
-          if ($(this).data('value') <= value) {
-            $(this).html('&#9733;');
-          } else {
-            $(this).html('&#9734;');
-          }
+        $(".star-rating").on("click", "span", function() {
+            var stars = $(this).data("stars");
+            $("input[name='stars'][value='" + stars + "']").prop("checked", true);
         });
-      });
     });
-  </script>
+    {% comment %} var quantityInput = document.getElementById("quantity-input");
+    var addToCartBtn = document.querySelector("form[action='/#{{book.id}}'] input[type='submit'][value='+']");
+    var removeFromCartBtn = document.querySelector("form[action='/#{{book.id}}'] input[type='submit'][value='-']");
+
+    addToCartBtn.addEventListener("click", function() {
+        quantityInput.max = "{{book.qty}}";
+    });
+
+    removeFromCartBtn.addEventListener("click", function() {
+        quantityInput.max = "{{book.qty}}";
+    }); {% endcomment %}
+</script>
 {% endblock %}

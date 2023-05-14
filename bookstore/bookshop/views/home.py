@@ -38,7 +38,7 @@ class Cart(View):
         book = request.POST.get('book')
         remove = request.POST.get('remove')
         cart = request.session.get('cart')
-        dele = request.POST.get('dele')
+        dele = request.POST.get('del')
         if cart:
             quantity = cart.get(book)
             if quantity:
@@ -47,8 +47,8 @@ class Cart(View):
                 else:
                     if quantity<=1:
                         cart.pop(book)
-                    # elif dele:
-                    #     cart.pop(book)
+                    elif dele:
+                        cart.pop(book)
                     else:
                         cart[book]  = quantity-1
             # else:
@@ -61,27 +61,39 @@ class Cart(View):
         print('cart' , request.session['cart'])
         print(book)
         return redirect('cart')
+        #return HttpResponseRedirect(f'{request.get_full_path()[1:]}')
 
-    def delete(self, request):
-        book = request.POST.get('book')
-        cart = request.session.get('cart')
+    # def delete(self, request):
+    #     book = request.POST.get('book')
+    #     cart = request.session.get('cart')
+    #     quantity = cart.get(book)
+    #     if cart:
+    #         cart.pop(book)
+    #         del cart[book]
         
-        if cart:
-            quantity = 0
-            cart.pop(book)
-        
-        request.session['cart'] = cart
-        return redirect('cart')
+    #     request.session['cart'] = cart
+    #     return redirect('cart')
 
     # def get(self , request):
     #     # print()
     #     return HttpResponseRedirect(f'{request.get_full_path()[1:]}')
 
+# def update_quantity(request):
+#     item_id = request.POST.get('item_id')
+#     quantity = request.POST.get('quantity')
+#     cart = Cart(request)
+#     cart.update(item_id, int(quantity))
+#     cart_items = cart.get_items()
+#     context = {'cart_items': cart_items}
+#     return render(request, 'cart.html', context)
+
 class Index(View):
     def post(self , request):
         book = request.POST.get('book')
+        qty = request.POST.get('qty_book')
         remove = request.POST.get('remove')
         cart = request.session.get('cart')
+        print('so luong: ',qty)
         if cart:
             quantity = cart.get(book)
             if quantity:
@@ -252,14 +264,14 @@ class CheckOut(View):
             fullname=get_fullname(customer),
             address=address,
             phone=phone,
-            amount= total
+            amount= total,
+            message = note,
         )
         transaction.save()
 
         order = Order(
             transaction=transaction,
             total_price=total,
-            note=note,
         )
         order.save()
 
@@ -289,10 +301,13 @@ class OrderView(View):
         return render(request , 'orders.html'  , {'transaction' : trans})
 
 class CommentForm(forms.ModelForm):
-    # star = forms.IntegerField(widget=forms.HiddenInput())
     class Meta:
         model = Review
         fields = ['star', 'comment']
+    CHOICES = [(1, '1 sao'), (2, '2 sao'), (3, '3 sao'), (4, '4 sao'), (5, '5 sao')]
+    star = forms.ChoiceField(label="Số sao đánh giá", choices=CHOICES, widget=forms.RadioSelect(attrs={'class': 'star'}))
+    #star = forms.IntegerField(label="Số sao đánh giá")
+    comment = forms.CharField(label="Bình luận", widget=forms.Textarea(attrs={'rows': 3}))
     #     widgets = {
     #         'comment': forms.Textarea(attrs={'rows': 3})
     #     }
@@ -469,22 +484,42 @@ def view_profile(request):
     customer = Customer.objects.get(id=customer_id)
     return render(request, 'profile.html', {'customer': customer})
 
-class CustomPasswordChangeForm(PasswordChangeForm):
-    old_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Mật khẩu hiện tại'}))
-    new_password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Mật khẩu mới'}))
-    new_password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Xác nhận mật khẩu mới'}))
+class CustomPasswordChangeForm(forms.Form):
+    old_password = forms.CharField(label='Mật khẩu hiện tại',widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Mật khẩu hiện tại'}))
+    new_password1 = forms.CharField(label='Mật khẩu mới',widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Mật khẩu mới'}))
+    new_password2 = forms.CharField(label='Xác nhận mật khẩu',widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Xác nhận mật khẩu mới'}))
 
 def change_password(request):
     if request.method == 'POST':
         customer_id = request.session.get('customer')
-        form = CustomPasswordChangeForm(customer_id, request.POST)
+        customer = Customer.objects.get(id = customer_id)
+        print(customer_id)
+        form = CustomPasswordChangeForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)
-            messages.success(request, 'Mật khẩu đã được thay đổi thành công.')
-            return redirect('profile')
+            current_password = form.cleaned_data['old_password']
+            new_password = form.cleaned_data['new_password1']
+            confirm_new_password = form.cleaned_data['new_password2']
+            print(confirm_new_password)
+            if check_password(current_password, customer.password):
+                if new_password == confirm_new_password:
+                    #request.customer.set_password(new_password)
+                    hashed_password = make_password(new_password)
+                    customer.password = hashed_password
+                    customer.save()
+                    messages.success(request, 'Mật khẩu của bạn đã được thay đổi thành công.')
+                    return redirect('profile')
+            else:
+                messages.error(request, "Có lỗi khi đổi")
+        # form = CustomPasswordChangeForm(customer_id, request.POST)
+        # if form.is_valid():
+        #     user = form.save()
+        #     update_session_auth_hash(request, user)
+        #     messages.success(request, 'Mật khẩu đã được thay đổi thành công.')
+        #     return redirect('profile')
         else:
             messages.error(request, 'Vui lòng sửa các lỗi bên dưới.')
     else:
-        form = CustomPasswordChangeForm(request.user)
+        customer_id = request.session.get('customer')
+        customer = Customer.objects.get(id=customer_id)
+        form = CustomPasswordChangeForm(initial={'customer': customer})
     return render(request, 'change_pass.html', {'form': form})

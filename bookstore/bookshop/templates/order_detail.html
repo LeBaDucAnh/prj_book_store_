@@ -27,7 +27,7 @@
                                 </tr>
                                 <tr>
                                     <th>Ngày đặt</th>
-                                    <td>{{tran.created_at}}</td>
+                                    <td>{{tran.created_at|date:"d/m/Y"}}</td>
                                 </tr>
                                 <tr>
                                     <th>Số điện thoại</th>
@@ -39,7 +39,7 @@
                                 </tr>
                                 <tr>
                                     <th>Tổng tiền</th>
-                                    <td>{{tran.amount}}</td>
+                                    <td>{{tran.amount}} VNĐ</td>
                                 </tr>
                                 <tr>
                                     <th>Trạng thái</th>
@@ -85,7 +85,7 @@
                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-left">
                     <aside id="tg-sidebar" class="tg-sidebar">
 
-                        <div class="tg-widget tg-catagories">
+                        {% comment %} <div class="tg-widget tg-catagories">
                             <div class="tg-widgettitle">
                                 <h3>Chức năng</h3>
                             </div>
@@ -97,7 +97,7 @@
                                     <li><a href="#">Đã hủy</a></li>
                                 </ul>
                             </div>
-                        </div>
+                        </div> {% endcomment %}
 
                     </aside>
                 </div>

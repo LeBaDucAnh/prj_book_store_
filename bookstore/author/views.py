@@ -6,6 +6,8 @@ from .serializers import AuthorSerializer
 from django.http import Http404
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
+
 class AuthorList(APIView):
     def get(self, request):
         authors = Author.objects.all()
@@ -20,8 +22,7 @@ class AuthorList(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
    
 class AuthorRetriew(APIView):
-    # authentication_classes = (TokenAuthentication,)
-    # permission_classes = (IsAuthenticated,)
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_object(self, pk):
         try:

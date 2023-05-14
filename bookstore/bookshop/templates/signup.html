@@ -22,7 +22,7 @@
                 {% endif %}
                 <div class='row'>
                     <div class='input-field col'>
-                        <input type='text' name='fullname' id='fullname' value="{{values.fullname}}"/>
+                        <input type='text' name='fullname' id='fullname' value="{{values.fullname}}" style="text-transform: none; width: 350px;"/>
                         <div class="error" style="color: red;"></div>
                         <label for='fullname'>Họ và tên</label>
                     </div>
@@ -30,7 +30,7 @@
 
                 <div class='row'>
                     <div class='input-field col'>
-                        <input type='text' name='email' id='email' value="{{values.email}}"/>
+                        <input type='text' name='email' id='email' value="{{values.email}}" style="text-transform: none; width: 350px;"/>
                         <div class="error" style="color: red;"></div>
                         <label for='email'>Email</label>
                     </div>
@@ -38,7 +38,7 @@
 
                 <div class='row'>
                     <div class='input-field col'>
-                        <input type='password' name='password' id='password'/>
+                        <input type='password' name='password' id='password' style="text-transform: none; width: 350px;"/>
                         <div class="error" style="color: red;"></div>
                         <label for='password'>Mật khẩu</label>
                     </div>
@@ -47,9 +47,9 @@
                 <br />
 
                 <center>
-                    <div class='row'>
+                    {% comment %} <div class='row'>
                         <input id="submit_button" type='submit' name='dangky' class='col s12 btn btn-large waves-effect indigo' value="Quên mật khẩu">
-                    </div> 
+                    </div>  {% endcomment %}
                     <br/>
                     <div class='row'>
                         <input id="submit_button" type='submit' name='dangky' class='col s12 btn btn-large waves-effect indigo' value="Đăng ký">

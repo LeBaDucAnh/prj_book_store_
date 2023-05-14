@@ -7,8 +7,7 @@
 <div class="tg-sectionspace tg-haslayout">
     <div class="container">
         <div class="row">
-            <div id="tg-twocolumns" class="tg-twocolumns">
-                <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
+                <div class="col-xs-12 col-sm-10 col-md-8 col-lg-12 pull-right">
                     <div id="tg-content" class="tg-content">
                         <div id="tg-twocolumns" class="tg-twocolumns">
 
@@ -36,10 +35,10 @@
                                             <td>{{forloop.counter}}</td>
                                             <td>{{trans.id}}</td>
                                             <td>{{trans.fullname}}</td>
-                                            <td>{{trans.created_at}}</td>
+                                            <td>{{trans.created_at|date:"d/m/Y"}}</td>
                                             <td>{{trans.phone}}</td>
                                             <td>{{trans.address}}</td>
-                                            <td>{{trans.amount}}</td>
+                                            <td>{{trans.amount}} VNĐ</td>
                                             {% if trans.status == "PENDING" %}
                                             <td>Chờ xác nhận</td>
                                             <td style="display: flex; padding: 30px 10px">
@@ -79,26 +78,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-left">
-                    <aside id="tg-sidebar" class="tg-sidebar">
-
-                        <div class="tg-widget tg-catagories">
-                            <div class="tg-widgettitle">
-                                <h3>Chức năng</h3>
-                            </div>
-                            <div class="tg-widgetcontent">
-                                <ul>
-                                    <li><a href="profile.php?infor">Đợi xác nhận</a></li>
-                                    <li><a href="profile.php?request">Đang giao</a></li>
-                                    <li><a href="profile.php?borrowed">Giao thành công</a></li>
-                                    <li><a href="profile.php?returned">Đã hủy</a></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                    </aside>
-                </div>
-            </div>
         </div>
     </div>
 

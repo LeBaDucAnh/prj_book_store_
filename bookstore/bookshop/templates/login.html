@@ -27,14 +27,14 @@
           {% endif %}
           <div class='row'>
             <div>
-              <input value="{{values.email}}" type='text' name='email' id='email' style="text-transform: none;"/>
+              <input value="{{values.email}}" type='text' name='email' id='email' style="text-transform: none; width: 350px;"/>
               <label for='user_id'>Email</label>
             </div>
           </div>
 
           <div class='row'>
             <div class='input-field col'>
-              <input type='password' name='password' id='password' />
+              <input type='password' name='password' id='password' style="text-transform: none; width: 350px;"/>
               <label for='password'>Mật khẩu</label>
             </div>
             <!-- <label style='float: right;'>
@@ -53,9 +53,9 @@
     </div>
     <div style="margin: 10px 0">
       <a href="/signup">Đăng ký</a>
-      <label>
+      {% comment %} <label>
         <a class='pink-text' style="color: red; !important;" href='/forgot-password/'><b>Quên mật khẩu</b></a>
-      </label>
+      </label> {% endcomment %}
     </div>
     {% comment %} <div style="margin: 10px 10px">
       <a href="/signup" style="color: red">Quên mật khẩu</a>

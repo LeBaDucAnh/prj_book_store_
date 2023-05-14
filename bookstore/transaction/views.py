@@ -76,6 +76,7 @@ class order_statistics(APIView):
             'labels': ['Chờ xác nhận', 'Đang giao', 'Đã giao', 'Đã hủy'],
             'values': [confirmed_orders, shipping_orders, delivered_orders, canceled_orders],
         }
+        print(data)
         return Response(data)
     
 class DailyRevenue(APIView):

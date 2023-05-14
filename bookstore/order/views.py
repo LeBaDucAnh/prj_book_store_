@@ -257,12 +257,15 @@ def report(request):
 
     # Lấy danh sách đơn hàng trong ngày hôm nay
     today = datetime.date.today()
-    orders = Transaction.objects.filter(updated_at__date=today, status='COMPLETED')
+    orders = Transaction.objects.filter(status='COMPLETED')
+    print(orders)
+     
     revenue = sum([order.amount for order in orders])
-
+    order_data = [{'date': order.updated_at.strftime('%Y-%m-%d'), 'reven': order.amount} for order in orders]
     # Trả về dữ liệu dưới dạng JSON
     data = {
         'revenue': revenue,
+        'order_data': order_data,
         'books': book_data,
     }
     return JsonResponse(data)

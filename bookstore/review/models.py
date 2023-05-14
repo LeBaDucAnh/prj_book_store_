@@ -11,7 +11,6 @@ class Review(models.Model):
     fullname = models.CharField(max_length=255, null=True)
     star = models.IntegerField(blank=True)
     comment = models.TextField(max_length=2000, blank=True)
-    image = models.ImageField(upload_to='reviews/')
     created_at = models.DateTimeField(auto_now_add=True)
-    uploaded_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 

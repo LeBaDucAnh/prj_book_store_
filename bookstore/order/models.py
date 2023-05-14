@@ -7,7 +7,6 @@ class Order(models.Model):
     id = models.AutoField(primary_key=True)
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, blank=True)
     total_price = models.IntegerField(blank=True)
-    note = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

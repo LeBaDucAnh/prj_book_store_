@@ -6,8 +6,8 @@ from author.serializers import AuthorSerializer
 
 class BookSerializer(ModelSerializer):
     #image = serializers.SerializerMethodField()
-    author = AuthorSerializer(read_only=True)
-    category = CategorySerializer(read_only=True)
+    author = AuthorSerializer(required = False)
+    category = CategorySerializer(required = False)
     class Meta:
         model = Book
         fields = '__all__'

@@ -8,6 +8,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from order.models import *
 from django.db.models import Sum
+from rest_framework.parsers import MultiPartParser, FormParser
+
 
 class BookList(APIView):
     def get(self, request):
@@ -22,6 +24,7 @@ class BookList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class BookRetrive(APIView):
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_object(self, pk):
         try:

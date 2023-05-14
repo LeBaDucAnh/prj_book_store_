@@ -1,24 +1,21 @@
-.star-ratings-css {
+.star-rating {
     unicode-bidi: bidi-override;
-    color: #c5c5c5;
-    font-size: 25px;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .star-ratings-css ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: inline-block;
-  }
-  
-  .star-ratings-css ul li {
-    display: inline-block;
+    direction: rtl;
     text-align: center;
-    cursor: pointer;
-  }
-  
-  .star-ratings-css ul li.active {
-    color: #ffca08;
-  }
+}
+
+.star-rating > span {
+    display: inline-block;
+    position: relative;
+    width: 1.1em;
+    font-size: 24px;
+}
+
+.star-rating > span:hover:before,
+.star-rating > span:hover ~ span:before,
+.star-rating > span:hover ~ input:before,
+.star-rating > span:hover ~ label:before {
+    content: "\2605";
+    position: absolute;
+    color: gold;
+}
